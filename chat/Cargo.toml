@@ -1,0 +1,22 @@
+[package]
+name = "chat"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+rand = { version = "*" }
+iced = "*"
+tokio = { version = "1.45.1", features = ["full"] }
+serde = { version = "*", features = ["derive"] }
+serde_json = { version = "*" }
+tokio-tungstenite = "*"
+futures-util = "*"
+uuid = { version = "*", features = ["v4", "serde"] }
+num-bigint = { version = "*", features = ["serde"] }
+num-traits = "*"
+rand_distr = "0.5.1"
+
+# [lib]
+# name = "lib"
+# path = "src/lib.rs"
+# crate-type = ["lib"]
