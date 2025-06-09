@@ -1,4 +1,4 @@
-use crate::message::{GlobalMessage, content::MessageContent};
+use crate::message::content::MessageContent;
 
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct ChannelLog {

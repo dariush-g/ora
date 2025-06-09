@@ -1,28 +1,20 @@
+use serde::{Deserialize, Serialize};
 use std::{collections::HashMap, sync::Arc};
-
 use tokio::sync::RwLock;
 use uuid::Uuid;
 
 use crate::{logs::ChannelLog, user::UserAccount};
 
+#[derive(Debug, Clone)]
 pub struct GlobalServer {
-    servers: Arc<RwLock<HashMap<Uuid, Server>>>,
-}
-
-pub struct Server {
-    info: ServerInfo,
-    channels: Arc<RwLock<HashMap<Uuid, Channel>>>,
     user_accounts: Arc<RwLock<HashMap<Uuid, UserAccount>>>,
+    channels: Arc<RwLock<HashMap<Uuid, Channel>>>,
 }
 
-pub struct ServerInfo {
-    id: Uuid,
-    name: String,
-    description: String,
-}
-
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Channel {
     id: Uuid,
     name: String,
-    logs: Arc<RwLock<ChannelLog>>,
+    members: HashMap<UserAccount, >,
+    logs: ChannelLog,
 }

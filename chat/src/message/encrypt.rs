@@ -2,11 +2,7 @@ use num_bigint::BigUint;
 use rand::RngCore;
 use serde::{Deserialize, Serialize};
 
-use crate::message::{
-    content::MessageContent,
-    dh::generate_private_key,
-    sha256::{self, sha256},
-};
+use crate::message::{content::MessageContent, dh::generate_private_key, sha256::sha256};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum MessageType {
