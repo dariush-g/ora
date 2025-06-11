@@ -4,14 +4,15 @@ pub mod encrypt;
 mod sha256;
 use std::time::SystemTime;
 
+use num_bigint::BigUint;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{logs::ChannelLog, server_structure::Server, user::UserAccount};
+use crate::{logs::ChannelLog, user::UserAccount};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct GlobalMessage {
-    pub sender: String,
+    pub from: String,
     // input is message -> encrypt it
     pub content: crate::message::encrypt::MessageType,
     pub timestamp: SystemTime,
@@ -19,13 +20,9 @@ pub struct GlobalMessage {
 }
 
 impl GlobalMessage {
-    pub fn new(
-        sender: String,
-        content: crate::message::encrypt::MessageType,
-        channel: Uuid,
-    ) -> Self {
+    pub fn new(from: String, content: crate::message::encrypt::MessageType, channel: Uuid) -> Self {
         Self {
-            sender,
+            from,
             content,
             timestamp: SystemTime::now(),
             channel,
@@ -35,9 +32,34 @@ impl GlobalMessage {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum ServerMessage {
-    ServerUpdate(Server),
-    ChatLogUpdate(Vec<ChannelLog>),
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //sends info abt server to joined members
+    //also if offline then rejoined
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //
+    ServerUpdate {
+        name: String,
+        users: Vec<UserAccount>,
+        logs: ChannelLog,
+    },
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //for online members to get userlist notifications
+    //to see joined members
     MemberJoined(UserAccount),
     MemberLeft(UserAccount),
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //also for online members to see live messages
+    //message is encryped on send
+    //
     ClientMessage(GlobalMessage),
+
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    // server generates random key and shares with
+    // the requesting client -> establishing the shared
+    // secret -> client sends encrypted message with nonce
+    // then server decrypts message, stores it into the channel logs,
+    // then establishes connection with the other clients in the channel
+    // and shares the key with them as well
+    //
+    KeyShare(BigUint),
 }

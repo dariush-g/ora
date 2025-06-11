@@ -1,14 +1,13 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::SystemTime};
 
+use num_bigint::BigUint;
+use serde::{Deserialize, Serialize};
 use tokio::{net::TcpStream, sync::RwLock};
 
+use crate::message::content::MessageContent;
+#[derive(Debug, Clone)]
 pub struct ClientConnection {
-    info: ConnectionInfo,
-    stored_messages: 
-}
-
-#[derive(Clone, Debug)]
-pub struct ConnectionInfo {
-    connected: bool,
-    stream: Arc<RwLock<TcpStream>>,
+    key: BigUint,
+    info: Arc<RwLock<TcpStream>>,
+    last_online: SystemTime,
 }

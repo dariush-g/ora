@@ -7,16 +7,19 @@ pub enum MessageContent {
     Video(Vec<u8>),
     Audio(Vec<u8>),
     File(Vec<u8>),
+    LEFTSERVER,
+    JOINEDSERVER,
 }
 
 impl MessageContent {
-    pub fn get_content(&self) -> Vec<u8> {
+    pub fn get_content(&self) -> &[u8] {
         match self {
-            MessageContent::Text(content) => content.clone(),
-            MessageContent::Image(content) => content.clone(),
-            MessageContent::Video(content) => content.clone(),
-            MessageContent::Audio(content) => content.clone(),
-            MessageContent::File(content) => content.clone(),
+            MessageContent::Text(content) => content,
+            MessageContent::Image(content) => content,
+            MessageContent::Video(content) => content,
+            MessageContent::Audio(content) => content,
+            MessageContent::File(content) => content,
+            _ => &[],
         }
     }
 }

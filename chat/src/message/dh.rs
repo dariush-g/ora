@@ -30,8 +30,8 @@ pub fn generate_private_key() -> BigUint {
     candidate
 }
 
-pub fn generate_sent_key(private: &BigUint, g: &BigUint, p: &BigUint) -> BigUint {
-    g.modpow(private, p)
+pub fn generate_sent_key(private: &BigUint) -> BigUint {
+    G.modpow(private, &P)
 }
 
 pub fn compute_shared_key(their_shared: &BigUint, my_private: &BigUint, p: &BigUint) -> BigUint {

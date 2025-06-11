@@ -1,13 +1,12 @@
 use num_bigint::BigUint;
 use rand::RngCore;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize, de::IntoDeserializer};
 
 use crate::message::{content::MessageContent, dh::generate_private_key, sha256::sha256};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum MessageType {
-    KeyRequest(BigUint),
-    KeyResponse(BigUint),
+    KeyShare(BigUint),
     EncryptedMessage(EncryptedMessage),
 }
 
@@ -35,7 +34,7 @@ impl EncryptedMessage {
         &self.nonce
     }
 
-    pub fn xor_keystream_decrypt(&self, secret: &BigUint) -> MessageContent {
+    pub fn xor_keystream_decrypt(self, secret: &BigUint) -> MessageContent {
         let mut plaintext = Vec::with_capacity(self.encrypted_content.len());
         let key = derive_key(secret, &self.nonce);
 
@@ -88,7 +87,7 @@ fn derive_key(shared_secret: &BigUint, nonce: &[u8]) -> [u8; 32] {
     sha256(&input)
 }
 
-fn xor_keystream_encrypt(plaintext: &[u8], key: &[u8; 32]) -> Vec<u8> {
+pub fn xor_keystream_encrypt(plaintext: &[u8], key: &[u8; 32]) -> Vec<u8> {
     let mut ciphertext = Vec::with_capacity(plaintext.len());
 
     for (i, &byte) in plaintext.iter().enumerate() {
